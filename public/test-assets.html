@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-item { margin: 20px 0; padding: 10px; border: 1px solid #ccc; }
+        img { max-width: 200px; max-height: 200px; }
+        video { max-width: 200px; max-height: 200px; }
+    </style>
+</head>
+<body>
+    <h1>Asset Loading Test</h1>
+    
+    <div class="test-item">
+        <h3>Bot Video Test</h3>
+        <video controls>
+            <source src="/BotAnimation/Bot.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <p>Video path: /BotAnimation/Bot.mp4</p>
+    </div>
+
+    <div class="test-item">
+        <h3>Image Tests</h3>
+        <img src="/Images/Arunai-Gateway.jpg" alt="Arunai Gateway" onerror="this.style.border='2px solid red'" onload="this.style.border='2px solid green'">
+        <p>Image path: /Images/Arunai-Gateway.jpg</p>
+        
+        <img src="/Images/arunai center jpeg.jpeg" alt="Arunai Center" onerror="this.style.border='2px solid red'" onload="this.style.border='2px solid green'">
+        <p>Image path: /Images/arunai center jpeg.jpeg</p>
+        
+        <img src="/Images/cse block.jpeg" alt="CSE Block" onerror="this.style.border='2px solid red'" onload="this.style.border='2px solid green'">
+        <p>Image path: /Images/cse block.jpeg</p>
+        
+        <img src="/Images/ECE Block.jpeg" alt="ECE Block" onerror="this.style.border='2px solid red'" onload="this.style.border='2px solid green'">
+        <p>Image path: /Images/ECE Block.jpeg</p>
+        
+        <img src="/Images/EEE BLOCK.jpeg" alt="EEE Block" onerror="this.style.border='2px solid red'" onload="this.style.border='2px solid green'">
+        <p>Image path: /Images/EEE BLOCK.jpeg</p>
+        
+        <img src="/Images/mechanical block.jpg" alt="Mechanical Block" onerror="this.style.border='2px solid red'" onload="this.style.border='2px solid green'">
+        <p>Image path: /Images/mechanical block.jpg</p>
+        
+        <img src="/Images/library.jpeg" alt="Library" onerror="this.style.border='2px solid red'" onload="this.style.border='2px solid green'">
+        <p>Image path: /Images/library.jpeg</p>
+    </div>
+
+    <script>
+        // Add console logging for debugging
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Asset test page loaded');
+            
+            // Test video loading
+            const video = document.querySelector('video');
+            if (video) {
+                video.addEventListener('loadstart', () => console.log('Video loading started'));
+                video.addEventListener('canplay', () => console.log('Video can play'));
+                video.addEventListener('error', (e) => console.error('Video error:', e));
+            }
+            
+            // Test image loading
+            const images = document.querySelectorAll('img');
+            images.forEach((img, index) => {
+                img.addEventListener('load', () => console.log(`Image ${index + 1} loaded successfully`));
+                img.addEventListener('error', (e) => console.error(`Image ${index + 1} failed to load:`, e));
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,225 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Leaflet map styling */
+.leaflet-container {
+  font-family: inherit;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.leaflet-popup-tip {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading animation for avatar */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.8);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* 3D Character Animations */
+@keyframes blink {
+  0%, 90%, 100% { opacity: 1; }
+  95% { opacity: 0; }
+}
+
+@keyframes wave {
+  0%, 100% { transform: rotate(12deg); }
+  50% { transform: rotate(-12deg); }
+}
+
+@keyframes walk-left {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-2px) rotate(5deg); }
+}
+
+@keyframes walk-right {
+  0%, 100% { transform: translateY(0) rotate(5deg); }
+  50% { transform: translateY(-2px) rotate(-5deg); }
+}
+
+@keyframes jump {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes character-walk {
+  0%, 100% { transform: translateX(0) scale(1); }
+  25% { transform: translateX(-2px) scale(1.05); }
+  75% { transform: translateX(2px) scale(0.95); }
+}
+
+.animate-blink {
+  animation: blink 3s infinite;
+}
+
+.animate-wave {
+  animation: wave 2s ease-in-out infinite;
+}
+
+.animate-walk-left {
+  animation: walk-left 0.6s ease-in-out infinite;
+}
+
+.animate-walk-right {
+  animation: walk-right 0.6s ease-in-out infinite;
+}
+
+.animate-jump {
+  animation: jump 1s ease-in-out infinite;
+}
+
+.animate-character-walk {
+  animation: character-walk 1.5s ease-in-out infinite;
+}
+
+/* User location marker styles */
+.user-location-marker {
+  z-index: 1001 !important;
+}
+
+/* Routing path styles */
+.leaflet-routing-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  padding: 10px;
+  max-width: 300px;
+}
+
+.leaflet-routing-container h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #374151;
+}
+
+.leaflet-routing-alt {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.leaflet-routing-alt h3 {
+  font-size: 12px;
+  font-weight: 500;
+  margin: 4px 0;
+  color: #6b7280;
+}
+
+.leaflet-routing-alt tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.leaflet-routing-alt td {
+  padding: 4px 8px;
+  font-size: 11px;
+  color: #374151;
+}
+
+/* Ensure routing lines are visible */
+.leaflet-routing-container .leaflet-routing-line {
+  stroke: #2563eb !important;
+  stroke-width: 6px !important;
+  stroke-opacity: 0.8 !important;
+  fill: #3b82f6 !important;
+  fill-opacity: 0.3 !important;
+}
+
+/* Dynamic button animations */
+@keyframes button-glow {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+  }
+}
+
+.animate-button-glow {
+  animation: button-glow 2s ease-in-out infinite;
+}
+
+/* Temporary route line styles */
+.temporary-route-line {
+  z-index: 999 !important;
+  pointer-events: none;
+}
+
+.temporary-route-line path {
+  stroke: #ff0000 !important;
+  stroke-width: 4px !important;
+  stroke-opacity: 0.7 !important;
+  stroke-dasharray: 5, 5 !important;
+  fill: none !important;
+}
+
+/* Navigation route line styles */
+.navigation-route-line {
+  z-index: 1000 !important;
+  pointer-events: none;
+}
+
+.navigation-route-line path {
+  stroke: #2563eb !important;
+  stroke-width: 6px !important;
+  stroke-opacity: 0.8 !important;
+  fill: none !important;
+}
+
+/* Ensure route line is always on top */
+.leaflet-overlay-pane svg {
+  z-index: 400 !important;
+}
+
+/* Make sure the route line is visible */
+.leaflet-interactive {
+  pointer-events: auto !important;
+}
