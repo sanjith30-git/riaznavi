@@ -8,6 +8,7 @@ interface DirectionalArrowProps {
   color?: string;
   distance?: number;
   language?: 'tamil' | 'english';
+  compassHeading?: number | null;
 }
 
 export const DirectionalArrow: React.FC<DirectionalArrowProps> = ({
@@ -16,7 +17,8 @@ export const DirectionalArrow: React.FC<DirectionalArrowProps> = ({
   animate = true,
   color = 'text-yellow-400',
   distance,
-  language = 'english'
+  language = 'english',
+  compassHeading = null
 }) => {
   // Determine size class based on prop
   const sizeClass = {
@@ -29,8 +31,59 @@ export const DirectionalArrow: React.FC<DirectionalArrowProps> = ({
   // Determine animation class
   const animationClass = animate ? 'animate-pulse' : '';
 
+  // Determine if we should use compass-based rotation for turn directions
+  const shouldUseCompassRotation = () => {
+    return compassHeading !== null && (
+      direction === 'left' || 
+      direction === 'right' || 
+      direction === 'slight-left' || 
+      direction === 'slight-right' || 
+      direction === 'sharp-left' || 
+      direction === 'sharp-right'
+    );
+  };
+
+  // Get rotation angle based on compass heading and direction
+  const getRotationStyle = () => {
+    if (!shouldUseCompassRotation()) return {};
+    
+    // Base arrow is pointing up (0 degrees)
+    // We need to rotate it based on compass heading and the turn direction
+    let rotationAngle = compassHeading!;
+    
+    // Add direction-specific offset
+    if (direction === 'left' || direction === 'slight-left' || direction === 'sharp-left') {
+      rotationAngle = (rotationAngle - 90) % 360; // 90 degrees left
+    } else if (direction === 'right' || direction === 'slight-right' || direction === 'sharp-right') {
+      rotationAngle = (rotationAngle + 90) % 360; // 90 degrees right
+    }
+    
+    return { transform: `rotate(${rotationAngle}deg)` };
+  };
+
   // Determine which arrow to display based on direction
   const getArrowComponent = () => {
+    // For arrive, we don't rotate based on compass
+    if (direction === 'arrive') {
+      return (
+        <div className={`flex flex-col items-center ${animationClass}`}>
+          <div className={`${color} ${sizeClass} flex items-center justify-center rounded-full border-4 border-current`}>
+            <span className="text-current font-bold text-lg">✓</span>
+          </div>
+        </div>
+      );
+    }
+    
+    // If we're using compass rotation, always use the up arrow and rotate it
+    if (shouldUseCompassRotation()) {
+      return (
+        <div style={getRotationStyle()}>
+          <ArrowUp className={`${sizeClass} ${color} ${animationClass} drop-shadow-lg`} />
+        </div>
+      );
+    }
+    
+    // Otherwise use the standard direction arrows
     switch (direction) {
       case 'left':
         return <ArrowLeft className={`${sizeClass} ${color} ${animationClass} drop-shadow-lg`} />;
@@ -48,14 +101,6 @@ export const DirectionalArrow: React.FC<DirectionalArrowProps> = ({
         return <CornerDownLeft className={`${sizeClass} ${color} ${animationClass} drop-shadow-lg`} />;
       case 'sharp-right':
         return <CornerDownRight className={`${sizeClass} ${color} ${animationClass} drop-shadow-lg`} />;
-      case 'arrive':
-        return (
-          <div className={`flex flex-col items-center ${animationClass}`}>
-            <div className={`${color} ${sizeClass} flex items-center justify-center rounded-full border-4 border-current`}>
-              <span className="text-current font-bold text-lg">✓</span>
-            </div>
-          </div>
-        );
       default:
         return <ArrowUp className={`${sizeClass} ${color} ${animationClass} drop-shadow-lg`} />;
     }

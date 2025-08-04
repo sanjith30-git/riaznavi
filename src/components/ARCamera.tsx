@@ -305,6 +305,7 @@ export const ARCamera: React.FC<ARCameraProps> = ({
                 color="text-yellow-400" 
                 distance={currentDistance}
                 language={language}
+                compassHeading={compassHeading}
               />
               <div className="mt-2 bg-black bg-opacity-70 text-white px-3 py-2 rounded-lg text-sm text-center animate-pulse">
                 {language === 'tamil' ? 'என்னைப் பின்தொடர்!' : 'Follow me!'}
