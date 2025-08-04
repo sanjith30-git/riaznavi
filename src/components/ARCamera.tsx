@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Camera, CameraOff, Navigation, X, Settings, ArrowLeft, Map, Compass, MapPin, LocateFixed, AlertTriangle, Construction, Shield, Volume2, VolumeX } from 'lucide-react';
 import { DirectionalArrow } from './DirectionalArrow';
+import { CompassArrow } from './CompassArrow';
 
 interface ARCameraProps {
   isActive: boolean;
@@ -332,6 +333,19 @@ export const ARCamera: React.FC<ARCameraProps> = ({
                   <Compass className="w-6 h-6 text-gray-700" />
                   <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1 w-1 h-2 bg-red-500 rounded-full" />
                 </div>
+              </div>
+            )}
+            
+            {/* Compass Arrow */}
+            {compassHeading !== null && (
+              <div className="absolute bottom-20 right-4 bg-white shadow-lg rounded-full p-2">
+                <CompassArrow 
+                  compassHeading={compassHeading} 
+                  size="medium" 
+                  color="text-blue-600" 
+                  showLabel={true}
+                  language={language}
+                />
               </div>
             )}
             
