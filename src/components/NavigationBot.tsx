@@ -924,36 +924,13 @@ export const NavigationBot: React.FC = () => {
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
             {/* Bot Avatar Section */}
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-center">
-              <div className="flex justify-center mb-6">
-                <div className="relative">
-                  <div className="bg-white rounded-full p-4 shadow-2xl border-4 border-white/20">
-                    <BotAnimation 
-                      isSpeaking={navState.isSpeaking}
-                      isListening={navState.isListening}
-                      isNavigating={navState.currentStep === 'navigating'}
-                      size="xlarge"
-                    />
-                  </div>
-                  
-                  {/* Status indicator ring */}
-                  {(navState.isSpeaking || navState.isListening || navState.currentStep === 'navigating') && (
-                    <div className="absolute inset-0 rounded-full border-4 border-white/40 animate-pulse"></div>
-                  )}
-                  
-                  {/* Activity indicator */}
-                  {navState.isSpeaking && (
-                    <div className="absolute -bottom-2 -right-2 bg-green-500 text-white rounded-full p-2 animate-bounce">
-                      <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
-                    </div>
-                  )}
-                  
-                  {navState.isListening && (
-                    <div className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-2 animate-pulse">
-                      <div className="w-3 h-3 bg-white rounded-full animate-ping"></div>
-                    </div>
-                  )}
-                </div>
-              </div>
+              <BotAnimation 
+                isSpeaking={navState.isSpeaking}
+                isListening={navState.isListening}
+                isNavigating={navState.currentStep === 'navigating'}
+                className="mx-auto mb-6"
+                size="large"
+              />
               <h2 className="text-xl font-semibold text-white">
                 {navState.language === 'tamil' ? 'கல்லூரி வழிகாட்டி' : 'Campus Guide Assistant'}
               </h2>
