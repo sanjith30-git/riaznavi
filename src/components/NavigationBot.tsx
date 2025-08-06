@@ -42,6 +42,8 @@ export const NavigationBot: React.FC = () => {
   const [navigationMode, setNavigationMode] = useState<'none' | 'map' | 'ar' | 'split'>('none');
   const [lastSpokenInstruction, setLastSpokenInstruction] = useState<string>('');
   const [lastSpeechTime, setLastSpeechTime] = useState<number>(0);
+  const [isRouteCalculating, setIsRouteCalculating] = useState(false);
+  const [hasSpokenRouteCalculated, setHasSpokenRouteCalculated] = useState(false);
   const [showMapControls, setShowMapControls] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [locationError, setLocationError] = useState<{ type: LocationErrorType; isOpen: boolean } | null>(null);
@@ -208,12 +210,14 @@ export const NavigationBot: React.FC = () => {
 
   const handleDestinationSelect = (destinationKey: string) => {
     // Prevent multiple simultaneous operations and clear any existing timeouts
-    if (isProcessing || speechManagerRef.current?.isBusy || navState.isListening) {
+    if (isProcessing || speechManagerRef.current?.isBusy || navState.isListening || isRouteCalculating) {
       console.log('Operation already in progress, ignoring click');
       return;
     }
     
     setIsProcessing(true);
+    setIsRouteCalculating(true);
+    setHasSpokenRouteCalculated(false);
     
     // Stop any current speech and clear queue immediately
     speechManagerRef.current?.stopSpeaking();
@@ -279,7 +283,7 @@ export const NavigationBot: React.FC = () => {
     // Reset processing flag after speech
     setTimeout(() => {
       setIsProcessing(false);
-    }, 3000);
+    }, 2000);
   };
 
   const toggleNavigationMode = () => {
@@ -293,26 +297,31 @@ export const NavigationBot: React.FC = () => {
   };
 
   const handleRouteCalculated = (distance: number, duration: number) => {
+    setIsRouteCalculating(false);
     setRouteInfo({ distance, duration });
     
     // Hide calculating status
     setNavigationStatus(null);
     
-    const distanceText = distance > 1000 
-      ? `${(distance / 1000).toFixed(1)} kilometers`
-      : `${Math.round(distance)} meters`;
-    
-    const durationText = duration > 60 
-      ? `${Math.round(duration / 60)} minutes`
-      : `${Math.round(duration)} seconds`;
+    // Only speak route calculated message once
+    if (!hasSpokenRouteCalculated) {
+      setHasSpokenRouteCalculated(true);
+      
+      const distanceText = distance > 1000 
+        ? `${(distance / 1000).toFixed(1)} kilometers`
+        : `${Math.round(distance)} meters`;
+      
+      const durationText = duration > 60 
+        ? `${Math.round(duration / 60)} minutes`
+        : `${Math.round(duration)} seconds`;
 
-    const response = addMessage('bot', getTranslation('routeCalculated', navState.language, {
-      distance: distanceText,
-      duration: durationText
-    })
-    );
-    
-    speakMessage(response.content);
+      const response = addMessage('bot', getTranslation('routeCalculated', navState.language, {
+        distance: distanceText,
+        duration: durationText
+      }));
+      
+      speakMessage(response.content);
+    }
   };
 
   const handleNavigationInstruction = (instruction: string, distance?: number) => {
@@ -400,6 +409,8 @@ export const NavigationBot: React.FC = () => {
     setCurrentInstruction('');
     setLastSpokenInstruction('');
     setLastSpeechTime(0);
+    setIsRouteCalculating(false);
+    setHasSpokenRouteCalculated(false);
     
     // Clear all states
     setIsProcessing(false);
@@ -445,6 +456,8 @@ export const NavigationBot: React.FC = () => {
     setCurrentInstruction('');
     setLastSpokenInstruction('');
     setLastSpeechTime(0);
+    setIsRouteCalculating(false);
+    setHasSpokenRouteCalculated(false);
     
     setNavState(prev => ({
       currentStep: 'welcome',
@@ -480,6 +493,8 @@ export const NavigationBot: React.FC = () => {
     setCurrentInstruction('');
     setLastSpokenInstruction('');
     setLastSpeechTime(0);
+    setIsRouteCalculating(false);
+    setHasSpokenRouteCalculated(false);
     
     // Add cancellation message
     const cancelMessage = navState.language === 'tamil' 
@@ -939,10 +954,16 @@ export const NavigationBot: React.FC = () => {
                 {navState.selectedDestination && (
                   <button
                     onClick={() => setIsMapFullscreen(true)}
+                    disabled={isRouteCalculating}
                     className="flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform hover:scale-105 bg-gradient-to-r from-green-500 to-teal-500 text-white shadow-lg"
                   >
                     <Maximize2 className="w-4 h-4" />
-                    <span>{navState.language === 'tamil' ? 'வழிசெலுத்தல்' : 'Navigate'}</span>
+                    <span>
+                      {isRouteCalculating 
+                        ? (navState.language === 'tamil' ? 'கணக்கிடுகிறது...' : 'Calculating...')
+                        : (navState.language === 'tamil' ? 'வழிசெலுத்தல்' : 'Navigate')
+                      }
+                    </span>
                   </button>
                 )}
               </div>
@@ -1105,7 +1126,7 @@ export const NavigationBot: React.FC = () => {
             {/* Center: Microphone Button */}
             <button
               onClick={startListening}
-              disabled={navState.isListening || navState.isSpeaking || isProcessing}
+              disabled={navState.isListening || navState.isSpeaking || isProcessing || isRouteCalculating}
               className={`
                 p-4 md:p-5 rounded-full transition-all duration-300 transform hover:scale-110 shadow-xl font-medium
                 ${navState.isListening 

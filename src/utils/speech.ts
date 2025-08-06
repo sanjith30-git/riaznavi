@@ -49,6 +49,14 @@ export class SpeechManager {
   // Add speech to queue with optional priority
   speak(text: string, onStart?: () => void, onEnd?: () => void, priority: number = 0): Promise<void> {
     return new Promise((resolve) => {
+      // Prevent duplicate messages in queue
+      const isDuplicate = this.speechQueue.some(item => item.text === text);
+      if (isDuplicate && priority < 2) {
+        console.log('Skipping duplicate speech:', text.substring(0, 50));
+        resolve();
+        return;
+      }
+      
       const speechItem = {
         text,
         onStart,
@@ -163,6 +171,7 @@ export class SpeechManager {
   // Clear the speech queue
   clearQueue() {
     this.speechQueue = [];
+    this.isProcessingQueue = false;
     if (this.synthesis.speaking) {
       this.synthesis.cancel();
     }
@@ -240,6 +249,7 @@ export class SpeechManager {
     }
     // Clear the queue when stopping speech
     this.clearQueue();
+    this.isProcessingQueue = false;
   }
 
   get isRecognitionSupported(): boolean {
