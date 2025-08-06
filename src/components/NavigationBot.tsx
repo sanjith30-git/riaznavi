@@ -320,7 +320,7 @@ export const NavigationBot: React.FC = () => {
         duration: durationText
       }));
       
-      speakMessage(response.content);
+      speakMessage(response.content, 1); // Lower priority to avoid conflicts
     }
   };
 
@@ -330,6 +330,12 @@ export const NavigationBot: React.FC = () => {
     // Check if navigation has been cancelled - don't process instructions if no destination is selected
     if (!navState.selectedDestination) {
       console.log('Navigation cancelled, ignoring instruction:', instruction);
+      return;
+    }
+    
+    // Prevent duplicate "Navigation started" messages
+    if (instruction.includes('Navigation started') && messages.some(msg => msg.content.includes('Navigation started'))) {
+      console.log('Skipping duplicate navigation started message');
       return;
     }
     

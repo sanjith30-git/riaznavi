@@ -40,6 +40,7 @@ export const NavigationMap: React.FC<NavigationMapProps> = ({
   const lastFeedbackTimeRef = useRef<number>(0);
   const currentDestinationRef = useRef<string | null>(null);
   const routeCalculatedRef = useRef<boolean>(false);
+  const initialMessageSentRef = useRef<boolean>(false);
 
   // Function to check if user has reached a waypoint and trigger instruction
   const checkWaypointInstruction = (userLatLng: any) => {
@@ -160,15 +161,14 @@ export const NavigationMap: React.FC<NavigationMapProps> = ({
     
     console.log(`Starting GPS navigation with ${routeInstructionsRef.current.length} instructions, ${routeWaypointsRef.current.length} waypoints, total distance: ${totalDistance}m`);
     
-    // Send initial navigation start message only if this is a new route
-    if (onNavigationInstruction && !hasInitialNavigationMessageRef.current && routeCalculatedRef.current) {
+    // Send initial navigation start message only once per destination
+    if (onNavigationInstruction && !initialMessageSentRef.current) {
       const startMessage = `Navigation started. Total distance: ${totalDistance > 1000 
         ? `${(totalDistance / 1000).toFixed(1)} kilometers`
         : `${Math.round(totalDistance)} meters`}. Follow the blue line on the map.`;
       console.log('Sending initial navigation message:', startMessage);
       onNavigationInstruction(startMessage, totalDistance);
-      hasInitialNavigationMessageRef.current = true;
-      routeCalculatedRef.current = false; // Reset flag after speaking
+      initialMessageSentRef.current = true;
     }
     
     // GPS-style instructions will be triggered when user reaches waypoints
@@ -612,7 +612,7 @@ export const NavigationMap: React.FC<NavigationMapProps> = ({
     if (currentDestinationRef.current !== selectedDestination) {
       console.log('Destination changed from', currentDestinationRef.current, 'to', selectedDestination);
       currentDestinationRef.current = selectedDestination;
-      hasInitialNavigationMessageRef.current = false;
+      initialMessageSentRef.current = false;
       routeCalculatedRef.current = false;
       currentInstructionIndexRef.current = 0;
       lastSpokenWaypointRef.current = -1;
@@ -644,12 +644,6 @@ export const NavigationMap: React.FC<NavigationMapProps> = ({
     
     // Log distance for debugging (removed 5km limit)
     console.log(`Distance to destination: ${distance}m`);
-
-    // Reset navigation state for new destination
-    hasInitialNavigationMessageRef.current = false;
-    routeCalculatedRef.current = false;
-    currentInstructionIndexRef.current = 0;
-    lastSpokenWaypointRef.current = -1;
 
     // Safely remove existing route with proper cleanup
     if (routeControlRef.current) {
@@ -835,6 +829,7 @@ export const NavigationMap: React.FC<NavigationMapProps> = ({
     currentInstructionIndexRef.current = 0;
     lastSpokenWaypointRef.current = -1;
     routeCalculatedRef.current = false;
+    initialMessageSentRef.current = false;
     lastRouteRecalculationRef.current = 0;
     totalDistanceRef.current = 0;
     
