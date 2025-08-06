@@ -297,8 +297,35 @@ export const ARCamera: React.FC<ARCameraProps> = ({
           
           {/* AR Overlay */}
           <div className="absolute inset-0 pointer-events-none">
+            {/* Centered Robot Bot Video */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+              <div className="bg-white rounded-full shadow-lg p-2 border-2 border-blue-200 hover:border-blue-300 transition-colors">
+                <div className="relative w-24 h-24 md:w-32 md:h-32 overflow-hidden rounded-full">
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                    style={{
+                      filter: 'brightness(1.1) saturate(1.2)'
+                    }}
+                    onError={(e) => {
+                      console.error('Bot video loading error:', e);
+                    }}
+                  >
+                    <source src="/BotAnimation/Bot.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                  
+                  {/* Status indicator overlay */}
+                  <div className="absolute inset-0 bg-blue-500 bg-opacity-20 rounded-full animate-pulse" />
+                </div>
+              </div>
+            </div>
+
             {/* Direction Arrow based on instruction */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
               <DirectionalArrow 
                 direction={getDirectionFromInstruction(currentInstruction)} 
                 size="xlarge" 
